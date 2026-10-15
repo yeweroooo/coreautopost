@@ -37,6 +37,79 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Quick Start
+
+### Basic Message
+
+```python
+from client import StealthDiscordClient
+# or: from coreautopost import StealthDiscordClient
+
+TOKEN = "YOUR_DISCORD_USER_TOKEN"
+GUILD_ID = "YOUR_GUILD_ID"
+CHANNEL_ID = "YOUR_CHANNEL_ID"
+
+client = StealthDiscordClient(token=TOKEN)
+
+status, response = client.send_message(
+    guild_id=GUILD_ID,
+    channel_id=CHANNEL_ID,
+    content="Hello from coreautopost",
+    simulate_typing=True
+)
+
+print(f"Status: {status}")
+```
+
+### Sending Messages with Attachments
+
+Attachments can be passed as local file paths or in-memory byte tuples:
+
+```python
+status, response = client.send_message(
+    guild_id=GUILD_ID,
+    channel_id=CHANNEL_ID,
+    content="Message with multiple attachments",
+    files=[
+        "/path/to/screenshot.png",
+        ("report.json", b'{"status": "ok"}', "application/json")
+    ],
+    simulate_typing=True
+)
+```
+
+### Using Proxies
+
+Specify a custom proxy string or use automatic proxy resolution:
+
+```python
+# 1. Custom proxy (HTTP, SOCKS4, SOCKS5)
+client = StealthDiscordClient(token=TOKEN, proxy="socks5://127.0.0.1:9050")
+
+# 2. Auto-fetch and test free working proxies from ProxyScrape
+client = StealthDiscordClient(token=TOKEN, proxy="proxyscrape")
+
+# 3. Rotate proxy during execution
+new_proxy = client.rotate_proxyscrape_proxy()
+```
+
+## Repository Structure
+
+```
+coreautopost/
+    ├── __init__.py      # Package exports
+    ├── client.py        # StealthDiscordClient orchestrator
+    ├── constants.py     # Endpoints, default profiles, epoch values
+    ├── session.py       # In-memory session state and Snowflake generator
+    ├── builder.py       # Dynamic builders for headers and payload structures
+    ├── proxy.py         # Proxy formatting and ProxyScrape auto-tester
+    ├── attachment.py    # GCS pre-signed upload handler
+    ├── pyproject.toml   # Build configuration
+    ├── requirements.txt # Runtime dependencies
+    ├── LICENSE          # MIT License
+    └── README.md        # Technical documentation
+```
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
